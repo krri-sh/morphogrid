@@ -1,0 +1,3 @@
+document.querySelectorAll('.flip').forEach(card=>{card.tabIndex=0;card.addEventListener('click',()=>card.classList.toggle('flipped'));card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.classList.toggle('flipped')}})});
+document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());
+document.querySelectorAll('.os-tabs').forEach(tabs=>tabs.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{const setup=tabs.closest('.setup');tabs.querySelectorAll('button').forEach(item=>item.classList.toggle('active',item===button));setup.querySelectorAll('.os-panel').forEach(panel=>panel.classList.toggle('active',panel.dataset.os===button.dataset.os))})));
