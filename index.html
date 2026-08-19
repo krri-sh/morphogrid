@@ -1,4 +1,373 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="MorphoGrid is a local-first Chrome extension for fast, visual spreadsheet and structured-data transformations."><title>MorphoGrid — Transform messy files without the ceremony</title><link rel="stylesheet" href="styles.css"></head><body>
+  
+  <!-- Video Pull-Out Tab -->
+<div id="videoPullout">
+
+  <button id="videoTab" aria-label="Watch video">
+
+    <!-- Video Icon -->
+    <svg
+      class="video-tab-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <rect
+        x="3"
+        y="5"
+        width="18"
+        height="14"
+        rx="3"
+        stroke="currentColor"
+        stroke-width="1.8"
+      />
+      <path
+        d="M10 9L15 12L10 15V9Z"
+        fill="currentColor"
+      />
+    </svg>
+
+    <span class="video-tab-text">WATCH VIDEO</span>
+
+  </button>
+
+
+  <!-- Video Panel -->
+  <div id="videoPanel">
+
+    <button id="videoClose" aria-label="Close video">×</button>
+
+    <div class="video-wrapper">
+      <iframe
+        id="videoFrame"
+        src=""
+        allow="autoplay; fullscreen"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+  </div>
+
+</div>
+
+
+<style>
+
+  #videoPullout {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 999999;
+
+    font-family: "Bricolage Grotesque", sans-serif;
+  }
+
+
+  /* RIGHT EDGE TAB */
+
+  #videoTab {
+    position: absolute;
+    right: 0;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 52px;
+    height: 190px;
+
+    border: none;
+    border-radius: 14px 0 0 14px;
+
+    background: #6656D9;
+    color: #ffffff;
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    box-shadow:
+      -4px 5px 20px rgba(0,0,0,0.18);
+
+    transition:
+      right 0.4s cubic-bezier(.4,0,.2,1),
+      background 0.2s ease,
+      width 0.2s ease;
+
+    z-index: 2;
+  }
+
+
+  #videoTab:hover {
+    background: #5948cc;
+    width: 56px;
+  }
+
+
+  /* VIDEO ICON */
+
+  .video-tab-icon {
+    width: 24px;
+    height: 24px;
+
+    flex-shrink: 0;
+  }
+
+
+  /* VERTICAL TEXT */
+
+  .video-tab-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+
+    font-family: "Bricolage Grotesque", sans-serif;
+
+    font-size: 12px;
+    font-weight: 650;
+
+    letter-spacing: 1.5px;
+
+    white-space: nowrap;
+  }
+
+
+  /* VIDEO PANEL */
+
+  #videoPanel {
+
+    position: absolute;
+
+    width: min(700px, 80vw);
+
+    top: 50%;
+    right: 0;
+
+    transform:
+      translateY(-50%)
+      translateX(100%);
+
+    background: #111;
+
+    border-radius: 16px 0 0 16px;
+
+    box-shadow:
+      -12px 10px 40px rgba(0,0,0,0.28);
+
+    overflow: hidden;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+      transform 0.45s cubic-bezier(.4,0,.2,1),
+      opacity 0.3s ease,
+      visibility 0.3s;
+
+    z-index: 1;
+  }
+
+
+  /* OPEN STATE */
+
+  #videoPullout.open #videoPanel {
+
+    transform:
+      translateY(-50%)
+      translateX(0);
+
+    opacity: 1;
+    visibility: visible;
+  }
+
+
+  #videoPullout.open #videoTab {
+    right: min(700px, 80vw);
+  }
+
+
+  /* VIDEO */
+
+  .video-wrapper {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    background: #000;
+  }
+
+
+  .video-wrapper iframe {
+
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+
+    border: none;
+  }
+
+
+  /* CLOSE BUTTON */
+
+  #videoClose {
+
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    width: 38px;
+    height: 38px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0,0,0,0.65);
+
+    color: #ffffff;
+
+    font-family: "Bricolage Grotesque", sans-serif;
+
+    font-size: 26px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    backdrop-filter: blur(6px);
+
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+
+
+  #videoClose:hover {
+    background: #6656D9;
+    transform: scale(1.07);
+  }
+
+
+  /* MOBILE */
+
+  @media (max-width: 768px) {
+
+    #videoPanel {
+      width: calc(100vw - 55px);
+    }
+
+    #videoPullout.open #videoTab {
+      right: calc(100vw - 55px);
+    }
+
+    #videoTab {
+      width: 46px;
+      height: 160px;
+    }
+
+    #videoTab:hover {
+      width: 46px;
+    }
+
+    .video-tab-text {
+      font-size: 10px;
+    }
+
+    .video-tab-icon {
+      width: 21px;
+      height: 21px;
+    }
+
+  }
+
+</style>
+
+
+<script>
+
+(function () {
+
+  const pullout = document.getElementById("videoPullout");
+  const tab = document.getElementById("videoTab");
+  const close = document.getElementById("videoClose");
+  const iframe = document.getElementById("videoFrame");
+
+  const videoURL =
+    "https://drive.google.com/file/d/1QB_ekX9yAnN9Fow8acEJrW5xI1Oxz1Pt/preview";
+
+  let isOpen = false;
+
+
+  function openVideo() {
+
+    isOpen = true;
+
+    pullout.classList.add("open");
+
+    // Load video only when opened
+    iframe.src = videoURL + "?autoplay=1";
+
+  }
+
+
+  function closeVideo() {
+
+    isOpen = false;
+
+    pullout.classList.remove("open");
+
+    // Stop video after closing animation
+    setTimeout(function () {
+
+      if (!isOpen) {
+        iframe.src = "";
+      }
+
+    }, 450);
+
+  }
+
+
+  tab.addEventListener("click", function () {
+
+    if (isOpen) {
+      closeVideo();
+    } else {
+      openVideo();
+    }
+
+  });
+
+
+  close.addEventListener("click", closeVideo);
+
+
+  // ESC key closes the video
+
+  document.addEventListener("keydown", function (event) {
+
+    if (event.key === "Escape" && isOpen) {
+      closeVideo();
+    }
+
+  });
+
+})();
+
+</script>
 <nav class="nav wrap"><a class="brand" href="index.html"><img class="brand-icon" src="assets/morphogrid-icon.png" alt="">MorphoGrid</a><div class="navlinks"><a href="#features">Features</a><a href="use-cases.html">Use cases</a><a href="privacy.html">Privacy</a><a class="button" href="https://krrish.lemonsqueezy.com/checkout/buy/9608ab88-c2cf-4cd6-b20f-ef9dfdc7fffb">Get Pro ↗</a></div></nav>
 <main><section class="hero wrap"><div><p class="eyebrow">Local-first transformation studio</p><h1>Messy data in.<br><span>Useful data out.</span></h1><p class="lede">Clean spreadsheets, reshape exports, join columns, validate records and build quick insights—all from a visual Chrome workspace that business users can actually enjoy.</p><div class="actions"><a class="button" href="https://chromewebstore.google.com/detail/morphogrid/kdaimjmpebehhkdonoedkfhbckkaefoi">Get MorphoGrid ↗</a><a class="button ghost" href="https://krrish.lemonsqueezy.com/checkout/buy/9608ab88-c2cf-4cd6-b20f-ef9dfdc7fffb">Get Pro</a><a class="button ghost" href="use-cases.html">See real use cases</a></div><div class="trust"><span>Your files stay local</span><span>No database required</span><span>Free Ollama AI</span></div></div>
 <div class="hero-art"><div class="app-shot"><div class="appbar"><i></i><i></i><i></i></div><div class="mock"><div class="mock-side"><div class="mock-brand">◈ MorphoGrid</div><div class="mock-step">01 Remove top rows</div><div class="mock-step">02 Promote header</div><div class="mock-step">03 Filter: Revenue ≥ 1k</div><div class="mock-step">04 Join columns</div></div><div class="mock-main"><div class="mock-title"><b>Clean preview</b><span class="pill">1,248 rows ready</span></div><div class="table"><div class="row head"><span>Customer</span><span>Region</span><span>Revenue</span></div><div class="row"><span>Acme Labs</span><span>North</span><span>$12,450</span></div><div class="row"><span>Sprout Co</span><span>West</span><span>$8,190</span></div><div class="row"><span>Orbit Works</span><span>East</span><span>$6,740</span></div><div class="row"><span>Nova Supply</span><span>South</span><span>$4,980</span></div></div></div></div><div class="float one">No formula archaeology <b>required.</b></div><div class="float two"><b>CSV · XLSX · JSON · XML</b></div></div></div></section>
